@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -20,10 +21,12 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::middleware('auth:api')->group(function () {
+    Route::get('orders/export/csv', [OrderController::class, 'exportToCSV']);
     Route::apiResources([
         'users' => UserController::class,
         'roles' => RoleController::class,
-        'products' => ProductController::class
+        'products' => ProductController::class,
+        'orders' => OrderController::class
     ]);
     Route::post('products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::get('me', [UserController::class, 'me']);

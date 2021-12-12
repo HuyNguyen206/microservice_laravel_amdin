@@ -2,9 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ProductFactory extends Factory
+class OrderItemFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -14,9 +15,9 @@ class ProductFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->words(4, true),
-            'description' => $this->faker->text(),
-            'price' => $this->faker->numberBetween(10, 100)
+            'product_title' => $this->faker->words(5, true),
+            'price' => $this->faker->numberBetween(10, 100),
+            'quantity' => $this->faker->numberBetween(1, 5),
         ];
     }
 }
