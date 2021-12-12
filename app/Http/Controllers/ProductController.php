@@ -2,10 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Resources\ProductResource;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
+/**
+ * Class ProductController
+ * @package App\Http\Controllers
+ */
 class ProductController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -13,8 +21,13 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::query()->paginate(5);
+
+        return response()->success(ProductResource::collection($products)->response()->getData());
+
+
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -32,9 +45,12 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        //
+        $product = Product::query()->create($request->except('image'));
+        $product->clearMediaCollection('product-image')->addMediaFromRequest('image')->toMediaCollection('product-image');
+        return response()->success(new ProductResource($product));
+
     }
 
     /**
@@ -43,9 +59,9 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Product $product)
     {
-        //
+        return response()->json(new ProductResource($product));
     }
 
     /**
@@ -62,13 +78,20 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param Product $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Product $product)
     {
-        //
+        $request->validate([
+            'image' => 'image'
+        ]);
+        $product->update($request->except('image'));
+        if ($request->has('image')) {
+            $product->clearMediaCollection('product-image')->addMediaFromRequest('image')->toMediaCollection('product-image');
+        }
+        return response()->success(new ProductResource($product));
     }
 
     /**
@@ -80,5 +103,7 @@ class ProductController extends Controller
     public function destroy($id)
     {
         //
+        Product::destroy($id);
+        return response()->noContent();
     }
 }
