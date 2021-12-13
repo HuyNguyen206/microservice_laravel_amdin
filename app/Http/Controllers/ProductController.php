@@ -14,6 +14,11 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware(['permission:view_products|edit_products'])->except('index');
+    }
+
     /**
      * Display a listing of the resource.
      *

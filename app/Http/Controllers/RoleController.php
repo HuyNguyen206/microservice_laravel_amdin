@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpFoundation\Response;
 
 class RoleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['permission:view_roles|edit_roles', 'role:Admin'])->except('index');
+    }
     /**
      * Display a listing of the resource.
      *

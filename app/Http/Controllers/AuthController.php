@@ -17,8 +17,8 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required'
         ]);
-        if (\Auth::attempt(\request()->only('email', 'password'))) {
-            $user = \Auth::user();
+        if (\Auth::guard('web')->attempt(\request()->only('email', 'password'))) {
+            $user = \Auth::guard('web')->user();
             $token = $user->createToken('admin')->accessToken;
             return response()->success(compact( 'token'));
         }

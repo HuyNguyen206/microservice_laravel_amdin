@@ -12,6 +12,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['permission:view_users|edit_users'])->except('index');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -44,7 +49,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-       return \response()->json(new UserResource($user->load('role')));
+       return \response()->json((new UserResource($user->load('role')))->additional([
+           'addition_data' => 'test'
+       ]));
     }
 
     /**
@@ -78,7 +85,8 @@ class UserController extends Controller
 
     public function me()
     {
-        return \response()->success(new UserResource(auth()->user()->load('role')));
+        $user = auth()->user();
+        return \response()->success(new UserResource($user->load('roles')));
     }
 
     public function updateInfoCurrentUser(UpdateInfoRequest $request)
