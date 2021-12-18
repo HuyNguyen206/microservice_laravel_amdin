@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
@@ -20,7 +21,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::middleware('auth:api')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('dashboard/chart', [DashboardController::class, 'chart']);
     Route::get('orders/export/csv', [OrderController::class, 'exportToCSV']);
     Route::apiResources([
         'users' => UserController::class,
@@ -31,6 +33,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::get('me', [UserController::class, 'me']);
     Route::put('update-info', [UserController::class, 'updateInfoCurrentUser']);
+    Route::post('logout', [AuthController::class, 'logout']);
 });
 
 Route::post('login', [AuthController::class, 'login']);

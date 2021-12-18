@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(RolePermissionSeeder::class);
         Product::factory(30)->create();
-
-        Order::factory(10)->hasOrderItems(random_int(2,5))->create();
+        $this->call(OrderAndOrderItemSeeder::class);
     }
 }
