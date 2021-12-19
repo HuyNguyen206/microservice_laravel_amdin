@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:api')->group(function () {
     Route::get('dashboard/chart', [DashboardController::class, 'chart']);
     Route::get('orders/export/csv', [OrderController::class, 'exportToCSV']);
     Route::apiResources([
@@ -35,6 +35,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('update-info', [UserController::class, 'updateInfoCurrentUser']);
     Route::post('logout', [AuthController::class, 'logout']);
 });
-
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
