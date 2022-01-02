@@ -14,7 +14,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['permission:view_users|edit_users'])->except('index');
+            $this->middleware(['permission:view_users|edit_users'])->except('index');
     }
 
     /**
@@ -25,7 +25,7 @@ class UserController extends Controller
     public function index()
     {
         //
-        $users = User::with('role')->paginate(5);
+        $users = User::with('roles')->latest()->paginate(50);
         return response()->json(UserResource::collection($users)->response()->getData(), Response::HTTP_OK);
     }
 
@@ -37,8 +37,15 @@ class UserController extends Controller
      */
     public function store(UserCreateRequest $request)
     {
-      return \response()->json(User::create($request->only('first_name', 'last_name', 'email') +
-          ['password' => bcrypt($request->password)]), Response::HTTP_CREATED);
+        try {
+            $user = User::create($request->only('first_name', 'last_name', 'email') +
+                ['password' => bcrypt($request->password ?? 'password')]);
+            $user->assignRole($request->get('role', 'viewer'));
+            return \response()->success($user, Response::HTTP_CREATED);
+        }catch (\Throwable $ex) {
+            return \response()->error($ex->getMessage());
+        }
+
     }
 
     /**

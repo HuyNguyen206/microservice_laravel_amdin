@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Spatie\Permission\Models\Role;
 
 class UserFactory extends Factory
 {
@@ -32,6 +34,17 @@ class UserFactory extends Factory
             return [
                 'email_verified_at' => null,
             ];
+        });
+    }
+
+    public function configure()
+    {
+        return $this->afterCreating(function (User $user) {
+            if ($user->email === 'nguyenlehuyuit@gmail.com') {
+                $user->assignRole('Admin');
+            } else {
+                $user->assignRole(Role::all()->random()->name);
+            }
         });
     }
 }

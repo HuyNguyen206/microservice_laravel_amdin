@@ -34,23 +34,23 @@ class RolePermissionSeeder extends Seeder
         ];
         // create permissions
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::create(['name' => $permission, 'guard_name' => 'api']);
         }
 
 
         // create roles and assign created permissions
         // this can be done as separate statements
-        $adminRole = Role::create(['name' => 'Admin']);
+        $adminRole = Role::create(['name' => 'Admin', 'guard_name' => 'api']);
         $adminRole->givePermissionTo(Permission::all());
 
-        $editorRole = Role::create(['name' => 'Editor']);
+        $editorRole = Role::create(['name' => 'Editor', 'guard_name' => 'api']);
         foreach ($permissions as $permission) {
             if ($permission === 'edit_roles') {
                 continue;
             }
             $editorRole->givePermissionTo($permission);
         }
-        $viewerRole = Role::create(['name' => 'Viewer']);
+        $viewerRole = Role::create(['name' => 'Viewer', 'guard_name' => 'api']);
         foreach ($permissions as $permission) {
             if (str_contains($permission, 'view')) {
                 $viewerRole->givePermissionTo($permission);
