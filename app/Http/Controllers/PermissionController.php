@@ -4,15 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use Symfony\Component\HttpFoundation\Response;
 
-class RoleController extends Controller
+class PermissionController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['permission:view_roles|edit_roles', 'role:Admin'])->except('index');
-    }
     /**
      * Display a listing of the resource.
      *
@@ -20,7 +14,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return \response()->success(Role::all());
+        return response()->success(Permission::all(['id', 'name']));
     }
 
     /**
@@ -32,16 +26,7 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         //
-        $request->validate([
-            'name' => 'required',
-            'permissions' => 'required'
-        ]);
-        $role = Role::create($request->only('name'));
-        $permissions = Permission::find(collect($request->permissions)->pluck('id')->toArray());
-        $role->syncPermissions($permissions);
-        response()->success($role, Response::HTTP_CREATED);
     }
-
 
     /**
      * Display the specified resource.
@@ -52,7 +37,6 @@ class RoleController extends Controller
     public function show($id)
     {
         //
-        return \response()->success(Role::with('permissions')->find($id));
     }
 
     /**
@@ -65,11 +49,6 @@ class RoleController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $role = Role::find($id);
-        $role->update($request->only('name'));
-        $permissions = Permission::find(collect($request->permissions)->pluck('id')->toArray());
-        $role->syncPermissions($permissions);
-        return \response()->success($role);
     }
 
     /**
@@ -80,8 +59,6 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        Role::destroy($id);
-
-        return \response()->noContent();
+        //
     }
 }

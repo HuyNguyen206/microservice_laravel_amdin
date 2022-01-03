@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProductFactory extends Factory
@@ -18,5 +19,13 @@ class ProductFactory extends Factory
             'description' => $this->faker->text(),
             'price' => $this->faker->numberBetween(10, 100)
         ];
+    }
+
+    public function configure()
+    {
+        return $this->afterCreating(function (Product $product) {
+           $product->addMediaFromUrl('https://picsum.photos/200/300')
+           ->toMediaCollection('product');
+        });
     }
 }

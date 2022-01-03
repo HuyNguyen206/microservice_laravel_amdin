@@ -23,6 +23,7 @@ class StoreProductRequest extends FormRequest
      */
     public function rules()
     {
+//        logger('StoreProductRequest validation');
         return [
             'title' => 'required|min:3',
             'price' => 'required|numeric',

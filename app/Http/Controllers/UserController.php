@@ -38,7 +38,7 @@ class UserController extends Controller
     public function store(UserCreateRequest $request)
     {
         try {
-            $user = User::create($request->only('first_name', 'last_name', 'email') +
+            $user = User::create($request->validated() +
                 ['password' => bcrypt($request->password ?? 'password')]);
             $user->assignRole($request->get('role', 'viewer'));
             return \response()->success($user, Response::HTTP_CREATED);
@@ -56,9 +56,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-       return \response()->json((new UserResource($user->load('role')))->additional([
-           'addition_data' => 'test'
-       ]));
+       return \response()->success((new UserResource($user->load('roles'))));
     }
 
     /**
@@ -71,9 +69,13 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         //
-        $user->update($request->only('first_name', 'last_name') + [
-            'password' => bcrypt($request->password)
-            ]);
+        $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'roles' => 'required'
+        ]);
+        $user->update($request->only('first_name', 'last_name'));
+        $user->assignRole($request->roles);
         return \response()->success($user);
     }
 

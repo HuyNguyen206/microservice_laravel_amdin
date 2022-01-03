@@ -26,7 +26,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::query()->paginate(5);
+        $products = Product::with('media')->latest()->paginate(20);
 
         return response()->success(ProductResource::collection($products)->response()->getData());
 
@@ -52,8 +52,9 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
+        logger('StoreProductRequest');
         $product = Product::query()->create($request->except('image'));
-        $product->clearMediaCollection('product-image')->addMediaFromRequest('image')->toMediaCollection('product-image');
+        $product->clearMediaCollection('product')->addMediaFromRequest('image')->toMediaCollection('product');
         return response()->success(new ProductResource($product));
 
     }
