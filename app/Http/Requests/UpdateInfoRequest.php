@@ -25,6 +25,8 @@ class UpdateInfoRequest extends FormRequest
     {
         return [
             'password' => 'confirmed',
+            'first_name' => '',
+            'last_name' => ''
         ];
     }
 }

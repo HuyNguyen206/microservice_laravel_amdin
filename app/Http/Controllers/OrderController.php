@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\OrderItemResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use Illuminate\Http\Request;
@@ -32,7 +33,8 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        return response()->success(new OrderResource($order->load('orderItems')));
+        $orderItems = $order->orderItems()->paginate(20);
+        return response()->success(OrderItemResource::collection($orderItems)->response()->getData());
     }
 
     public function exportToCSV()

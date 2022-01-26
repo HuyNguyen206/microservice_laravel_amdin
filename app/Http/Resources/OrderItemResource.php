@@ -14,7 +14,7 @@ class OrderItemResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->only('id', 'product_title', 'order_id') + [
+        return $this->only('id', 'product_title', 'order_id', 'quantity') + [
             'price' => (float) $this->price
             ];
     }

@@ -101,9 +101,13 @@ class UserController extends Controller
     public function updateInfoCurrentUser(UpdateInfoRequest $request)
     {
         $user = auth()->user();
-        $user->update(\request()->only('first_name', 'last_name') + [
+        $data = $request->except('password');
+        if (!empty($request->password)) {
+          $data = $data + [
                 'password' => bcrypt(\request()->password)
-            ]);
+            ];
+        }
+        $user->update($data);
         return \response()->success($user);
     }
 }

@@ -28,7 +28,8 @@ Route::middleware('auth:api')->group(function () {
         'users' => UserController::class,
         'roles' => RoleController::class,
         'products' => ProductController::class,
-        'orders' => OrderController::class
+        'orders' => OrderController::class,
+        'permissions' => \App\Http\Controllers\PermissionController::class
     ]);
     Route::post('products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::get('me', [UserController::class, 'me']);
